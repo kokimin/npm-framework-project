@@ -1,5 +1,6 @@
 {
   "name": "npm-framework-project",
+  "homepage": "https://kokimin.github.io/npm-framework-project/",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -9,8 +10,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:github": "VITE_BASE_PATH=/npm-framework-project/ VITE_OUT_DIR=github-dist vite build && touch github-dist/.nojekyll",
-    "deploy": "gh-pages -d github-dist -b github-dist",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -b gh-pages -d dist",
     "preview": "vite preview",
     "lint": "run-s lint:*",
     "lint:oxlint": "oxlint . --fix",
