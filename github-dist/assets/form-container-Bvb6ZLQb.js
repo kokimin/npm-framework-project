@@ -1,1 +1,0 @@
-import{a as o,o as s,d as r,b as a,k as n,e as l}from"./index-FLwNCorf.js";const c={class:"info_form"},i={key:0},m={__name:"form-container",props:{title:{type:String,default:""}},setup(e){return(t,u)=>(s(),o("div",c,[e.title?(s(),o("h3",i,n(e.title),1)):r("",!0),a("table",null,[a("colgroup",null,[l(t.$slots,"colgroup")]),l(t.$slots,"default")])]))}};export{m as _};
