@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:github": "VITE_BASE_PATH=/npm-framework-project/ VITE_OUT_DIR=github-dist vite build && touch github-dist/.nojekyll",
     "preview": "vite preview",
     "lint": "run-s lint:*",
     "lint:oxlint": "oxlint . --fix",
