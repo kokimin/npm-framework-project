@@ -1,0 +1,1 @@
+import{c as o,o as s,m as r,a,q as n,p as l}from"./index-9u51VGzd.js";const c={class:"info_form"},i={key:0},p={__name:"form-container",props:{title:{type:String,default:""}},setup(e){return(t,m)=>(s(),o("div",c,[e.title?(s(),o("h3",i,n(e.title),1)):r("",!0),a("table",null,[a("colgroup",null,[l(t.$slots,"colgroup")]),l(t.$slots,"default")])]))}};export{p as _};

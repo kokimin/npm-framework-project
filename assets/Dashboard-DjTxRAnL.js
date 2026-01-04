@@ -1,0 +1,1 @@
+import{j as t,o as a,w as n,f as r,h as s}from"./index-9u51VGzd.js";const i={__name:"Dashboard",setup(_){return(c,e)=>{const o=r("container-view");return a(),t(o,null,{default:n(()=>[...e[0]||(e[0]=[s(" DashBoard ",-1)])]),_:1})}}};export{i as default};
