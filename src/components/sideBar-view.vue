@@ -7,22 +7,15 @@
  * @Created      2025.05.01
  * ============================================================================
  */
-import { reactive, toRefs } from 'vue';
+import { computed, inject, reactive, toRefs } from 'vue';
 import router from '../router/index.js';
 
 /**
  * --------------------------------------------------------------------------
- * ▶ Props 정의
+ * ▶ Emitter 정의
  * --------------------------------------------------------------------------
  */
-const props = defineProps({
-  subMenuInfo: {
-    type: Object,
-    default() {
-      return {};
-    },
-  },
-});
+const emitter = inject('emitter');
 
 /**
  * --------------------------------------------------------------------------
@@ -30,35 +23,91 @@ const props = defineProps({
  * --------------------------------------------------------------------------
  */
 const data = reactive({
-  activeMenu: '',
+  menuInfo: {},
+  activeMenuInfo: {},
+  openSubMenuIds: [],
 });
-const { activeMenu } = toRefs(data);
+
+const { menuInfo, activeMenuInfo, openSubMenuIds } = toRefs(data);
+
+// 메뉴 정보가 있는지 확인
+const hasMenuInfo = computed(() => menuInfo.value && Object.keys(menuInfo.value).length > 0);
 
 /**
  * --------------------------------------------------------------------------
  * ▶ 이벤트 핸들러
  * --------------------------------------------------------------------------
  */
-// 메뉴 클릭 이벤트
-const menuClick = (menu) => {
-  activeMenu.value = menu.menuId;
+// GNB 메뉴 클릭 이벤트 리스너
+emitter.on('mittGnbMenuClickEvent', (menu) => {
+  menuInfo.value = menu;
+  openSubMenuIds.value = []; // 새 메뉴 선택 시 서브메뉴 초기화
+});
+
+// 서브메뉴 토글
+const toggleSubMenu = (menuId) => {
+  const index = openSubMenuIds.value.indexOf(menuId);
+  if (index > -1) {
+    openSubMenuIds.value.splice(index, 1);
+  } else {
+    openSubMenuIds.value.push(menuId);
+  }
+};
+
+// 메뉴 네비게이션
+const navigateToMenu = (menu) => {
+  activeMenuInfo.value = menu;
   router.push({ name: menu.menuId }).catch(() => {});
 };
+
+// 메뉴 클릭 이벤트
+const menuClick = (menu) => {
+  const hasChildren = menu.children && menu.children.length > 0;
+
+  if (hasChildren) {
+    toggleSubMenu(menu.menuId);
+  } else {
+    navigateToMenu(menu);
+  }
+};
+
+// 메뉴 활성화 상태 확인
+const isMenuActive = (menuId) => menuId === activeMenuInfo.value.menuId;
+
+// 서브메뉴 열림 상태 확인
+const isSubMenuOpen = (menuId) => openSubMenuIds.value.includes(menuId);
 </script>
 
 <template>
   <aside class="aside">
     <div class="inner">
-      <!-- .close 넣으면 자동으로 닫힙니다. -->
-      <div class="row_menu" v-if="subMenuInfo">
-        <h2>{{ subMenuInfo.menuNm }}</h2>
+      <div v-if="hasMenuInfo" class="row_menu">
+        <h2>{{ menuInfo.menuNm }}</h2>
+
         <ul class="menu">
           <li
-            v-for="menu in subMenuInfo.children"
+            v-for="menu in menuInfo.children"
             :key="menu.menuId"
-            :class="[menu.menuId === activeMenu ? 'active' : '']"
+            :class="{
+              active: isMenuActive(menu.menuId),
+              open: isSubMenuOpen(menu.menuId),
+            }"
           >
-            <a class="m" @click="menuClick(menu)">{{ menu.menuNm }}</a>
+            <a class="m" @click="menuClick(menu)">
+              {{ menu.menuNm }}
+            </a>
+
+            <ul v-if="menu.children?.length" class="sub2">
+              <li
+                v-for="subMenu in menu.children"
+                :key="subMenu.menuId"
+                :class="{ active: isMenuActive(subMenu.menuId) }"
+              >
+                <a @click="menuClick(subMenu)">
+                  {{ subMenu.menuNm }}
+                </a>
+              </li>
+            </ul>
           </li>
         </ul>
       </div>

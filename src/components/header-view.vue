@@ -7,17 +7,17 @@
  * @Created      2025.05.01
  * ============================================================================
  */
-import { reactive, toRefs } from 'vue';
-import { _sampleMenuList } from '@libs/constants.js';
+import { inject, reactive, toRefs } from 'vue';
 import { ElementButton, ElementTooltip } from '@kokimin/vue-framework';
-
+import router from '@router/index.js';
+import { _sampleMenuList } from '@libs/constants.js';
 
 /**
  * --------------------------------------------------------------------------
- * ▶ Emits 정의
+ * ▶ 상수 정의
  * --------------------------------------------------------------------------
  */
-const emit = defineEmits(['gnbMenuClick']);
+const emitter = inject('emitter');
 
 /**
  * --------------------------------------------------------------------------
@@ -36,15 +36,13 @@ const { activeGnb } = toRefs(data);
  */
 // Gnb 메뉴 클릭
 const gnbMenuActiveClick = (menu) => {
-  console.log(menu);
   activeGnb.value = menu.menuId;
-
-  emit('gnbMenuClick', menu);
+  emitter.emit('mittGnbMenuClickEvent', menu);
 };
 
 // 로그아웃
 const logOutClick = () => {
-  alert('로그아웃');
+  router.push({ name: 'login' }).catch(() => {});
 };
 </script>
 
